@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import DrupalDataService from "../services/DrupalService";
 import { Link } from "react-router-dom";
+//import SimpleMDEReact from "react-simplemde-editor";
+//import "easymde/dist/easymde.min.css";
+import MyEditor from "../components/MyEditor.js";
 
 const OutcomesList = () => {
-  debugger;
+  //debugger;
   const [paragraphs, setParagraphs] = useState([]);
+
+  debugger;
+  const [updatedtext, setUpdatedtext] = useState("");
 
   useEffect(() => {
     retrieveParagraphs();
@@ -31,7 +37,12 @@ const OutcomesList = () => {
           {
             paragraphs.map((paragraph, index) => (
               <div className="para-block">
-                {paragraph.text}
+                <MyEditor
+                  className={""}
+                  label={index+1}
+                  value={paragraph.text}
+                  onChange={()=> setUpdatedtext()}
+                />
               </div>
               ))
           }

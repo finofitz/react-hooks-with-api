@@ -1,6 +1,6 @@
 .list {
   text-align: left;
-  max-width: 750px;
+  max-width: 950px;
   margin: auto;
 }
 
@@ -15,6 +15,5 @@
 }
 
 .para-block {
-  outline: 1px dashed red;
   margin-bottom: 10px;
 }
