@@ -13,3 +13,8 @@
   max-width: 300px;
   margin: auto;
 }
+
+.para-block {
+  outline: 1px dashed red;
+  margin-bottom: 10px;
+}
