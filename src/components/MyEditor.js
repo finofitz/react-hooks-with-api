@@ -4,14 +4,16 @@ import "easymde/dist/easymde.min.css";
 
 function MyEditor(props) {
     return (
-        <SimpleMDEReact        
+        <SimpleMDEReact
+            id={props.id}
+            getMdeInstance={props.getMdeInstance}        
             className={""}
             label={props.label}
             value={props.value}
             onChange={props.onChange}
-
+                                            //https://github.com/Ionaru/easy-markdown-editor#configuration
             options={{
-                toolbar: ["bold", "italic", "heading-3", "|", "quote"],
+                toolbar: ["bold", "italic", "heading-3", "|", "unordered-list", "ordered-list","preview"],
                 autofocus: false,
                 spellChecker: false
                 // etc.
