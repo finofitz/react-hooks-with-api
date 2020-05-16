@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState, useReducer } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { SearchContextProvider, criteriaReducer } from "./contexts/SearchCriteria.js";
 
-//import AddTutorial from "./components/AddTutorial";
-//import Tutorial from "./components/Tutorial";
 import OutcomesList from "./components/OutcomesList";
 
 function App() {
   return (
+    <SearchContextProvider value={useReducer(criteriaReducer, { outcome: 'howtomanage', audience: 'customer', motivator: 'cd' })}>
     <Router>
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -34,6 +34,7 @@ function App() {
             <Route exact path={["/", "/edit"]} component={OutcomesList} />
           </Switch>
     </Router>
+    </SearchContextProvider>
   );
 }
 

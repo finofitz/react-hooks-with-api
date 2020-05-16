@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useReducer } from "react";
 import DrupalDataService from "../services/DrupalService";
 import MyEditor from "../components/MyEditor.js";
+import OutcomeDropdown from "../components/OutcomeDDL.js";
+import { SearchContext } from "../contexts/SearchCriteria.js";
+
 
 const OutcomesList = () => {
   //debugger;
   const [paragraphs, setParagraphs] = useState([]);
 
-  let editors = [];
-  
-  const handleChange = (index,paragraph) => {
-    //debugger;
-  };
+  const [searchCriteria, dispatchCriteria] = useContext(SearchContext);
 
+  const handleChange = (index,paragraph) => {
+    // TODO: Couldnt get this to work as paragraph property only gave me the unchanged version??
+    //debugger;
+  };  
+
+  let editors = [];  
+  // This fires when an editor instance is instanciated
   const setInstance = instance => {
     editors = editors.concat(instance);
     //debugger; 
   }; 
   
   const updateParagraph = () => {
-
-    debugger;
-
+    //debugger;
     let i = 0;
+    let j = 0;
     const retVal = paragraphs.map (function(origpara) {
       if (origpara.text !== editors[i].value()) {
-
+        j+=1;
         let paraObject = {
           id: origpara.id,
           value: editors[i].value()
@@ -37,18 +42,19 @@ const OutcomesList = () => {
         .catch(e => {
           console.log(e);
         });
-        }
-
+      }
       i+=1;
     });
+    j>0? alert((j) + ' paragraphs updated') : alert('no paragraphs changed');
   };
 
   useEffect(() => {
-    retrieveParagraphs();
+    retrieveParagraphs(searchCriteria.outcome);
   }, []);
 
-  const retrieveParagraphs = () => {
-    DrupalDataService.getData()
+  const retrieveParagraphs = (outcome) => {
+    debugger
+    DrupalDataService.getData(outcome)
       .then(response => {
         setParagraphs(response.paragraphs);
         console.log(response.paragraphs);
@@ -62,7 +68,14 @@ const OutcomesList = () => {
     <div className="list row">
       
       <div className="col-md-6">
-        <div><h4 style={{display: 'inline-block'}}>leadershipstyle/customer/cd</h4>
+
+      <div>
+        <br/>
+      <OutcomeDropdown valueChanged={retrieveParagraphs}/>
+      <br/>
+      </div>
+
+      <div><h4 style={{display: 'inline-block'}}>{(searchCriteria.outcome)}/customer/cd</h4>
         <button style={{margin: '0 0 0 10px'}}
           onClick={() => {updateParagraph()}}
           className="button muted-button"
@@ -74,7 +87,7 @@ const OutcomesList = () => {
         <ul className="list-group">
           {
             paragraphs.map((paragraph, index) => (
-              <div className="para-block">
+              <div className="para-block" key={paragraph.id}>
                 <MyEditor
                   id={paragraph.id}
                   getMdeInstance={setInstance}
