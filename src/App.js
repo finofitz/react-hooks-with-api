@@ -2,13 +2,38 @@ import React, { useState, useReducer } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { SearchContextProvider, criteriaReducer } from "./contexts/SearchCriteria.js";
+import { SearchContext } from "./contexts/SearchCriteria.js";
 
 import OutcomesList from "./components/OutcomesList";
 
-function App() {
+ //= useContext(SearchContext);
+
+ const initialstate = { outcome: 'howtomanage', audience: 'customer', motivator: 'cd' };
+
+ const OUTCOME_CHANGED = 'OUTCOME_CHANGED';
+ const AUDIENCE_CHANGED = 'AUDIENCE_CHANGED';
+ const MOTIVATOR_CHANGED = 'MOTIVATOR_CHANGED';
+
+ const criteriaReducer = (state, action) => {
+   debugger;
+     switch (action.type) {
+       case OUTCOME_CHANGED:
+         return {...state, outcome: action.payload};
+       case AUDIENCE_CHANGED:
+         return {...state, audience: action.payload};
+       case MOTIVATOR_CHANGED:
+          return {...state, motivator: action.payload};            
+       default:
+         return initialstate;
+     }
+   };
+
+function App() {  
+
+  const [searchCriteria, dispatchCriteria] = useReducer(criteriaReducer, initialstate)
+
   return (
-    <SearchContextProvider value={useReducer(criteriaReducer, { outcome: 'howtomanage', audience: 'customer', motivator: 'cd' })}>
+    <SearchContext.Provider value={{searchCriteria, dispatchCriteria}}>
     <Router>
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -34,7 +59,7 @@ function App() {
             <Route exact path={["/", "/edit"]} component={OutcomesList} />
           </Switch>
     </Router>
-    </SearchContextProvider>
+    </SearchContext.Provider>
   );
 }
 

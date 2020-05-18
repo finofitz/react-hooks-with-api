@@ -2,14 +2,13 @@ import React, { useState, useEffect, useContext, useReducer } from "react";
 import DrupalDataService from "../services/DrupalService";
 import MyEditor from "../components/MyEditor.js";
 import OutcomeDropdown from "../components/OutcomeDDL.js";
+import AudienceDropdown from "../components/AudienceDDL.js";
+import MotivatorDropdown from "../components/MotivatorDDL.js";
 import { SearchContext } from "../contexts/SearchCriteria.js";
 
-
 const OutcomesList = () => {
-  //debugger;
   const [paragraphs, setParagraphs] = useState([]);
-
-  const [searchCriteria, dispatchCriteria] = useContext(SearchContext);
+  const {searchCriteria} = useContext(SearchContext);
 
   const handleChange = (index,paragraph) => {
     // TODO: Couldnt get this to work as paragraph property only gave me the unchanged version??
@@ -20,11 +19,9 @@ const OutcomesList = () => {
   // This fires when an editor instance is instanciated
   const setInstance = instance => {
     editors = editors.concat(instance);
-    //debugger; 
   }; 
   
   const updateParagraph = () => {
-    //debugger;
     let i = 0;
     let j = 0;
     const retVal = paragraphs.map (function(origpara) {
@@ -37,7 +34,7 @@ const OutcomesList = () => {
 
         DrupalDataService.updatePara(paraObject)
         .then(response => {
-          alert(JSON.stringify(response.data));
+          //alert(JSON.stringify(response.data));
         })
         .catch(e => {
           console.log(e);
@@ -49,14 +46,16 @@ const OutcomesList = () => {
   };
 
   useEffect(() => {
-    retrieveParagraphs(searchCriteria.outcome);
-  }, []);
+    retrieveParagraphs(searchCriteria.outcome, searchCriteria.audience, searchCriteria.motivator);
+  }, [searchCriteria]);
 
-  const retrieveParagraphs = (outcome) => {
-    debugger
-    DrupalDataService.getData(outcome)
+  const retrieveParagraphs = (outcome, audience, motivator) => {
+    DrupalDataService.getData(outcome, audience, motivator)
       .then(response => {
-        setParagraphs(response.paragraphs);
+        if (response.paragraphs.length > 0)
+          setParagraphs(response.paragraphs);
+        else
+          setParagraphs([]);
         console.log(response.paragraphs);
       })
       .catch(e => {
@@ -67,16 +66,24 @@ const OutcomesList = () => {
   return (
     <div className="list row">
       
-      <div className="col-md-6">
+      <div className="col-md-8">
 
       <div>
         <br/>
-      <OutcomeDropdown valueChanged={retrieveParagraphs}/>
-      <br/>
+        <div style={{display: 'inline-block', margin: '0 10px 0 0'}} >
+          <OutcomeDropdown valueChanged={retrieveParagraphs}/>
+        </div>
+        <div style={{display: 'inline-block', margin: '0 10px 0 0'}}>
+          <AudienceDropdown valueChanged={retrieveParagraphs}/>
+        </div>
+        <div style={{display: 'inline-block', margin: '0 10px 0 0'}}>
+          <MotivatorDropdown valueChanged={retrieveParagraphs}/>
+        </div>
+        <br/><br/>
       </div>
 
-      <div><h4 style={{display: 'inline-block'}}>{(searchCriteria.outcome)}/customer/cd</h4>
-        <button style={{margin: '0 0 0 10px'}}
+      <div><h5 style={{display: 'inline-block'}}>Drupal get path= {(searchCriteria.outcome)}/{(searchCriteria.audience)}/{(searchCriteria.motivator)}</h5>
+        <button style={{margin: '0 0 0 10px', float: 'right'}}
           onClick={() => {updateParagraph()}}
           className="button muted-button"
         >
@@ -92,7 +99,7 @@ const OutcomesList = () => {
                   id={paragraph.id}
                   getMdeInstance={setInstance}
                   className={""}
-                  label={paragraph.id}
+                  label={"Drupal update key= " + paragraph.id}
                   value={paragraph.text}
                   onChange={()=>handleChange(index, paragraph)}
                 />                
@@ -100,7 +107,19 @@ const OutcomesList = () => {
               ))
           }
         </ul>
-      </div>
+     
+
+      <div>
+        <button style={{margin: '0 0 0 10px', float: 'right'}}
+          onClick={() => {updateParagraph()}}
+          className="button muted-button"
+        >
+          Save
+        </button>
+        </div>
+
+        </div>
+
     </div>
   );
 };

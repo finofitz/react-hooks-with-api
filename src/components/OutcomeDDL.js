@@ -14,19 +14,16 @@ function OutcomeDropDown({valueChanged}) {
     ]);
 
     //debugger;
-    const [searchCriteria, dispatchCriteria] = useContext(SearchContext);
+    const context = useContext(SearchContext);
 
-    //onClick={() => {retrieveParagraphs()}}
-
-    const itemChanged = (val) => {
-      dispatchCriteria({type: "OUTCOME_CHANGED", payload: val});
-      valueChanged(val);
+    const itemChanged = async (val) => {      
+      await context.dispatchCriteria({type: "OUTCOME_CHANGED", payload: val});
     }
 
     return (
         <div>
           <select
-              value={searchCriteria.outcome}
+              value={context.searchCriteria.outcome}
               onChange={e => itemChanged(e.currentTarget.value)}
           >
           {items.map(({ label, value }) => (

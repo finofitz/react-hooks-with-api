@@ -15,7 +15,8 @@ function MyEditor(props) {
             options={{
                 toolbar: ["bold", "italic", "heading-3", "|", "unordered-list", "ordered-list","preview"],
                 autofocus: false,
-                spellChecker: false
+                spellChecker: false,                
+                minHeight: "20px"
                 // etc.
             }}
       />
